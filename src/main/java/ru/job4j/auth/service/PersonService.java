@@ -28,12 +28,17 @@ public class PersonService {
         return personRepository.findById(id);
     }
 
-    public Person save(Person person) {
-        return personRepository.save(person);
+    public boolean save(Person person) {
+        try {
+            return personRepository.save(person).getId() != 0;
+        } catch (Exception e) {
+            log.error("Exception at PersonRepository.save()", e);
+        }
+        return false;
     }
 
-    public void delete(Person person) {
-        personRepository.delete(person);
+    public boolean delete(Person person) {
+        return personRepository.deleteById(person.getId());
     }
 
 

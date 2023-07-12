@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Integer> {
     List<Person> findAll();
+    boolean deleteById(int id);
 }

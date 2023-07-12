@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS persons
 (
     id serial primary key not null,
-    login varchar(2000),
+    login varchar(2000) NOT NULL unique,
     password varchar(2000)
 );
 
