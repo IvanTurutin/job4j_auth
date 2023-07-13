@@ -29,10 +29,12 @@ public class PersonService {
     }
 
     public boolean save(Person person) {
-        try {
+        if (person.getId() == 0) {
             return personRepository.save(person).getId() != 0;
-        } catch (Exception e) {
-            log.error("Exception at PersonRepository.save()", e);
+        }
+        if (findById(person.getId()).isPresent()) {
+            personRepository.save(person);
+            return true;
         }
         return false;
     }
