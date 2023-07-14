@@ -29,9 +29,10 @@ public class PersonService {
     }
 
     public boolean save(Person person) {
-        if (person.getId() == 0) {
-            return personRepository.save(person).getId() != 0;
-        }
+        return personRepository.save(person).getId() != 0;
+    }
+
+    public boolean update(Person person) {
         if (findById(person.getId()).isPresent()) {
             personRepository.save(person);
             return true;

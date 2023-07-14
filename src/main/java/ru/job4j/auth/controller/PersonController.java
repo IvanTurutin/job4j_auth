@@ -43,7 +43,7 @@ public class PersonController {
 
     @PutMapping("/")
     public ResponseEntity<Void> update(@RequestBody Person person) {
-        return this.persons.save(person) ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
+        return this.persons.update(person) ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
     }
 
     @DeleteMapping("/{id}")
