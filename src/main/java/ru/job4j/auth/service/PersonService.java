@@ -29,7 +29,12 @@ public class PersonService {
     }
 
     public boolean save(Person person) {
-        return personRepository.save(person).getId() != 0;
+        try {
+            return personRepository.save(person).getId() != 0;
+        } catch (Exception e) {
+            log.error("Exception at PersonRepository.save()", e);
+        }
+        return false;
     }
 
     public boolean update(Person person) {
