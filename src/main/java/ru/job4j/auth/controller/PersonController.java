@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.job4j.auth.domain.Person;
 import ru.job4j.auth.service.PersonService;
 
@@ -31,23 +30,24 @@ public class PersonController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/all")
-    public List<Person> findAll() {
-        return this.persons.findAll();
+    public ResponseEntity<List<Person>> findAll() {
+        List<Person> personList = persons.findAll();
+        return new ResponseEntity<>(
+                personList,
+                personList.isEmpty() ? HttpStatus.INTERNAL_SERVER_ERROR : HttpStatus.OK
+        );
     }
 
     @GetMapping("/{id}")
-    public Person findById(@PathVariable int id) {
-        return persons.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Account is not found. Please, check requisites."
-                ));
+    public ResponseEntity<Person> findById(@PathVariable int id) {
+        return ResponseEntity.of(persons.findById(id));
     }
 
     @PostMapping(value = "/sign-up", consumes = {"application/json"})
     public ResponseEntity<Person> create(@RequestBody Person person) {
         checkPersonData(person);
         person.setPassword(encoder.encode(person.getPassword()));
-        return new ResponseEntity<Person>(
+        return new ResponseEntity<>(
                 person,
                 this.persons.save(person) ? HttpStatus.CREATED : HttpStatus.CONFLICT
         );
