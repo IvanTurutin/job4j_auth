@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.auth.domain.Person;
+import ru.job4j.auth.dto.PersonDto;
 import ru.job4j.auth.service.PersonService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,10 +55,16 @@ public class PersonController {
     }
 
     @PutMapping("/")
-    public ResponseEntity<Void> update(@RequestBody Person person) {
-        checkPersonData(person);
-        person.setPassword(encoder.encode(person.getPassword()));
-        return this.persons.update(person) ? ResponseEntity.ok().build() : ResponseEntity.internalServerError().build();
+    public ResponseEntity<Void> update(@RequestBody PersonDto person) {
+        if (person.password() == null) {
+            throw new NullPointerException();
+        }
+        if (person.password().length() < 6) {
+            throw new IllegalArgumentException("Invalid password. Password length must be more than 5 characters.");
+        }
+        return this.persons.update(new PersonDto(person.id(), encoder.encode(person.password())))
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.internalServerError().build();
     }
 
     @DeleteMapping("/{id}")
